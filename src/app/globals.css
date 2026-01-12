@@ -1,17 +1,17 @@
 @import "tailwindcss";
 
 :root {
-  --background: #F9F6F2;
-  --foreground: #1F1F1F;
-  --primary: #FF4D8C;
-  --primary-foreground: #FFFFFF;
-  --secondary: #FFFFFF;
-  --secondary-foreground: #1F1F1F;
-  --muted: #8A817C;
-  --muted-foreground: #8A817C;
-  --card: #FFFFFF;
-  --card-foreground: #1F1F1F;
-  --border: #EAE0D5;
+  --background: #f9f6f2;
+  --foreground: #1f1f1f;
+  --primary: #ff4d8c;
+  --primary-foreground: #ffffff;
+  --secondary: #ffffff;
+  --secondary-foreground: #1f1f1f;
+  --muted: #8a817c;
+  --muted-foreground: #8a817c;
+  --card: #ffffff;
+  --card-foreground: #1f1f1f;
+  --border: #eae0d5;
 }
 
 @theme inline {
@@ -26,7 +26,7 @@
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-border: var(--border);
-  
+
   --font-serif: var(--font-playfair);
   --font-sans: var(--font-inter);
 }
@@ -39,7 +39,12 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: var(--font-serif), serif;
 }
 
@@ -50,26 +55,30 @@ h1, h2, h3, h4, h5, h6 {
   .shadow-glow {
     box-shadow: 0 4px 20px -2px rgba(255, 77, 140, 0.3);
   }
-  
+
   @keyframes ecg-scroll {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
   }
-  
+
   .animate-ecg-scroll {
     animation: ecg-scroll 6s linear infinite;
   }
 }
 
 /* Custom Range Slider Styles */
-input[type=range]::-webkit-slider-thumb {
+input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   opacity: 0; /* Hide default thumb because we use a custom div */
   height: 24px;
   width: 24px;
 }
 
-input[type=range]::-moz-range-thumb {
+input[type="range"]::-moz-range-thumb {
   opacity: 0;
   height: 24px;
   width: 24px;

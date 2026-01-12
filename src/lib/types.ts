@@ -20,8 +20,8 @@ export interface PredictionResponse {
 }
 
 export interface ModelInfo {
-    model_type: string;
-    features: string[];
-    n_features: number;
-    description: string;
+  model_type: string;
+  features: string[];
+  n_features: number;
+  description: string;
 }
