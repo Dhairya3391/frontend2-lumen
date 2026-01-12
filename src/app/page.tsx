@@ -1,13 +1,47 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { AssessmentForm } from "@/components/AssessmentForm"
 import { Dashboard } from "@/components/Dashboard"
 import { predictRisk } from "@/lib/api"
 import { PatientData, PredictionResponse } from "@/lib/types"
 import { Button } from "@/components/ui/button"
 import { motion, AnimatePresence } from "framer-motion"
-import { Bell, Activity, Heart, ArrowRight } from "lucide-react"
+import { Activity, Heart, ArrowRight, RefreshCw, X } from "lucide-react"
+
+// Data Source: Hardcoded locally for this prototype. 
+// In a real app, this could come from a CMS or API.
+const HEALTH_QUOTES = [
+    "A healthy outside starts from the inside.",
+    "Take care of your body. It's the only place you have to live.",
+    "Walking is man's best medicine.",
+    "The groundwork of all happiness is health.",
+    "Prevention is better than cure.",
+    "Movement is a celebration of what your body can do.",
+    "Rest is not idleness, it's a vital part of renewal.",
+    "Your heart is the engine of your life. Keep it tuned.",
+    "Eat food, not too much, mostly plants.",
+    "Health is not about the weight you lose, but the life you gain.",
+    "A good laugh and a long sleep are the best cures in the doctor's book.",
+    "Physical fitness is the first requisite of happiness.",
+    "To enjoy the glow of good health, you must exercise.",
+    "Let food be thy medicine and medicine be thy food.",
+    "Wellness is the complete integration of body, mind, and spirit.",
+    "Every step you take is a step away from heart disease.",
+    "Listen to your heart, it knows the rhythm of your life.",
+    "Happiness is the highest form of health.",
+    "Invest in your health, it pays the best dividends.",
+    "Small changes make a big difference over time.",
+    "Your body hears everything your mind says.",
+    "Don't wish for a good body, work for it.",
+    "Self-care is not selfish. You cannot serve from an empty vessel.",
+    "Strength does not come from physical capacity. It comes from an indomitable will.",
+    "Calm mind, strong heart."
+]
+
+const HEALTH_GREETINGS = [
+    "Champion", "Thriver", "Wellness Warrior", "Friend", "Athlete", "Visionary"
+]
 
 export default function Home() {
   const [view, setView] = useState<'landing' | 'assessment' | 'results'>('landing')
@@ -15,11 +49,88 @@ export default function Home() {
   const [patientData, setPatientData] = useState<PatientData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
+  // Interactive States
+  const [activeQuote, setActiveQuote] = useState<string | null>(null)
+  const [avatarSeed, setAvatarSeed] = useState("Felix")
+  const [greeting, setGreeting] = useState("User")
+  const [showHistory, setShowHistory] = useState(false)
+  const [showMyocardiumInfo, setShowMyocardiumInfo] = useState(false)
+
+  // Live Simulated Data
+  // Initialize with random values within normal ranges
+  const [heartRate, setHeartRate] = useState(() => Math.floor(Math.random() * (100 - 60 + 1)) + 60)
+  const [bpSystolic, setBpSystolic] = useState(() => Math.floor(Math.random() * (130 - 110 + 1)) + 110)
+  const [bpDiastolic, setBpDiastolic] = useState(() => Math.floor(Math.random() * (85 - 70 + 1)) + 70)
+
+  // History Data for Graphs (Initialize with some mock past data relative to current)
+  const [hrHistory, setHrHistory] = useState<number[]>(() => 
+    Array.from({length: 15}, () => Math.floor(Math.random() * (100 - 60 + 1)) + 60)
+  )
+  const [bpHistory, setBpHistory] = useState<number[]>(() => 
+    Array.from({length: 15}, () => Math.floor(Math.random() * (140 - 110 + 1)) + 110)
+  )
+
+  // Initialize Random Data on Mount
+  useEffect(() => {
+    // Randomize Avatar
+    const seeds = ["Felix", "Aneka", "Jocelyn", "Robert", "Create", "Lumen"]
+    setAvatarSeed(seeds[Math.floor(Math.random() * seeds.length)])
+    
+    // Randomize Greeting
+    setGreeting(HEALTH_GREETINGS[Math.floor(Math.random() * HEALTH_GREETINGS.length)])
+  }, [])
+
+  // Simulate Live Vitals
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Fluctuate Heart Rate
+      setHeartRate(prev => {
+        const change = Math.floor(Math.random() * 5) - 2 // -2 to +2
+        const newValue = Math.min(Math.max(prev + change, 55), 110) // Clamp
+        setHrHistory(h => [...h.slice(1), newValue]) // Update history
+        return newValue
+      })
+
+      // Fluctuate BP
+      if (Math.random() > 0.4) {
+          setBpSystolic(prev => {
+             const change = Math.floor(Math.random() * 3) - 1
+             const newValue = prev + change
+             setBpHistory(h => [...h.slice(1), newValue]) // Update history (tracking systolic)
+             return newValue
+          })
+           setBpDiastolic(prev => {
+             const change = Math.floor(Math.random() * 3) - 1
+             return prev + change
+          })
+      }
+    }, 2000) // Update every 2 seconds
+
+    return () => clearInterval(interval)
+  }, [])
+
+  // Helper to generate SVG path from data
+  const generateSparkline = (data: number[], min: number, max: number) => {
+    if (data.length === 0) return "";
+    const width = 100;
+    const height = 40;
+    const stepX = width / (data.length - 1);
+    
+    const points = data.map((val, i) => {
+        const x = i * stepX;
+        const normalizedY = ((val - min) / (max - min)) * (height - 10);
+        const y = height - 5 - normalizedY;
+        return `${x},${y}`;
+    });
+    
+    return `M${points.join(" L")}`;
+  };
 
   const handleAssessmentSubmit = async (data: PatientData) => {
     setLoading(true);
     setError(null);
-    setPatientData(data); // Store data for simulation
+    setPatientData(data);
     try {
       const response = await predictRisk(data);
       setResult(response);
@@ -45,6 +156,18 @@ export default function Home() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const triggerEasterEgg = () => {
+    const randomQuote = HEALTH_QUOTES[Math.floor(Math.random() * HEALTH_QUOTES.length)]
+    setActiveQuote(randomQuote)
+    setTimeout(() => setActiveQuote(null), 5000)
+  }
+
+  const cycleAvatar = () => {
+    const seeds = ["Felix", "Aneka", "Jocelyn", "Robert", "Create", "Lumen"]
+    const next = seeds[(seeds.indexOf(avatarSeed) + 1) % seeds.length]
+    setAvatarSeed(next)
+  }
+
   return (
     <div className="min-h-screen bg-[#F9F6F2] font-sans">
       <AnimatePresence mode="wait">
@@ -59,20 +182,43 @@ export default function Home() {
             className="container mx-auto px-4 lg:px-8 py-6 pb-32 lg:pb-12 min-h-screen flex flex-col"
           >
              {/* Header */}
-             <header className="flex items-center justify-between mb-8 lg:mb-12">
-                <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-[#A2D2C9] relative overflow-hidden flex items-center justify-center shrink-0 border-2 border-white shadow-sm">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User" className="w-10 h-10" />
+             <header className="flex items-center justify-between mb-8 lg:mb-12 relative z-20">
+                <div 
+                    className="flex items-center gap-3 cursor-pointer group" 
+                    onClick={cycleAvatar}
+                    title="Click to switch user profile"
+                >
+                    <div className="w-12 h-12 rounded-full bg-[#A2D2C9] relative overflow-hidden flex items-center justify-center shrink-0 border-2 border-white shadow-sm group-hover:scale-105 transition-transform">
+                        <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${avatarSeed}`} alt="User" className="w-10 h-10" />
                         <div className="absolute bottom-1 right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
                     </div>
                     <div>
-                        <h3 className="font-serif font-bold text-xl text-[#1F1F1F]">Lumen</h3>
+                        <h3 className="font-serif font-bold text-xl text-[#1F1F1F] group-hover:text-[#FF4D8C] transition-colors">Hello, {greeting}</h3>
                         <p className="text-[10px] font-bold tracking-widest text-[#FF4D8C] uppercase">Connected</p>
                     </div>
                 </div>
-                <button className="w-12 h-12 rounded-full border border-[#EAE0D5] bg-white flex items-center justify-center text-[#1F1F1F] hover:bg-[#F9F6F2] transition-colors shadow-sm">
-                    <Bell className="w-5 h-5" />
-                </button>
+                
+                <div className="relative">
+                    <button 
+                        onClick={triggerEasterEgg}
+                        className="w-12 h-12 rounded-full border border-[#EAE0D5] bg-white flex items-center justify-center text-[#FF4D8C] hover:bg-[#FFF0F5] hover:scale-110 transition-all shadow-sm"
+                    >
+                        <Heart className="w-5 h-5 fill-current animate-pulse" />
+                    </button>
+                    <AnimatePresence>
+                        {activeQuote && (
+                            <motion.div 
+                                initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, y: 10, scale: 0.9 }}
+                                className="absolute top-14 right-0 w-64 p-4 bg-white rounded-2xl shadow-xl border border-pink-100 z-50 text-center"
+                            >
+                                <p className="font-serif text-[#1F1F1F] italic text-sm">"{activeQuote}"</p>
+                                <div className="absolute -top-2 right-4 w-4 h-4 bg-white rotate-45 border-t border-l border-pink-100"></div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                </div>
              </header>
 
              {/* Main Content Grid */}
@@ -101,37 +247,81 @@ export default function Home() {
                      </div>
 
                      {/* Active Sensors (Desktop Layout) */}
-                     <div className="hidden lg:grid grid-cols-2 gap-6 max-w-lg">
-                        <div className="bg-white p-6 rounded-[2rem] border border-white shadow-sm hover:shadow-md transition-all duration-300 group">
-                            <div className="flex justify-between items-start mb-4">
-                                <span className="text-xs font-bold tracking-widest text-[#8A817C] uppercase">Heart Rate</span>
-                                <div className="w-8 h-8 bg-[#FFF0F5] rounded-full flex items-center justify-center text-[#FF4D8C] group-hover:scale-110 transition-transform">
-                                    <Heart className="w-4 h-4 fill-current" />
-                                </div>
-                            </div>
-                            <div className="flex items-baseline gap-1 mb-2">
-                                <span className="text-5xl font-serif text-[#1F1F1F]">72</span>
-                                <span className="text-sm text-[#8A817C] uppercase font-bold">BPM</span>
-                            </div>
-                            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E6F6F4] text-[#00A991]">
-                                <div className="w-2 h-2 rounded-full bg-[#00A991]"></div>
-                                <span className="text-[10px] font-bold uppercase">Normal</span>
-                            </div>
+                     <div className="hidden lg:block max-w-lg">
+                        <div className="flex justify-between items-center mb-4">
+                            <span className="text-xs font-bold tracking-widest text-[#8A817C] uppercase">Active Sensors</span>
+                            <button 
+                                onClick={() => setShowHistory(!showHistory)}
+                                className="text-[10px] font-bold text-[#FF4D8C] hover:text-[#E63D7A] uppercase tracking-widest flex items-center gap-1"
+                            >
+                                {showHistory ? "View Live" : "View History"}
+                                <RefreshCw className="w-3 h-3" />
+                            </button>
                         </div>
-
-                        <div className="bg-white p-6 rounded-[2rem] border border-white shadow-sm hover:shadow-md transition-all duration-300 group">
-                            <div className="flex justify-between items-start mb-4">
-                                <span className="text-xs font-bold tracking-widest text-[#8A817C] uppercase">Blood Pressure</span>
-                                <div className="w-8 h-8 bg-[#FFF7ED] rounded-full flex items-center justify-center text-[#F59E0B] group-hover:scale-110 transition-transform">
-                                    <Activity className="w-4 h-4" />
+                        
+                        <div className="grid grid-cols-2 gap-6">
+                            {/* Heart Rate Card */}
+                            <div className="bg-white p-6 rounded-[2rem] border border-white shadow-sm hover:shadow-md transition-all duration-300 group relative overflow-hidden h-40">
+                                <div className="flex justify-between items-start mb-2 relative z-10">
+                                    <span className="text-xs font-bold tracking-widest text-[#8A817C] uppercase">Heart Rate</span>
+                                    <Heart className="w-4 h-4 text-[#FF4D8C] fill-current animate-pulse" />
                                 </div>
+                                
+                                {showHistory ? (
+                                    <motion.div 
+                                        initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                                        className="absolute inset-0 flex items-center justify-center p-4 pt-8"
+                                    >
+                                        {/* Dynamic Sparkline */}
+                                        <svg viewBox="0 0 100 40" className="w-full h-full overflow-visible">
+                                            <path d={generateSparkline(hrHistory, 50, 120)} fill="none" stroke="#FF4D8C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                        </svg>
+                                    </motion.div>
+                                ) : (
+                                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                                        <div className="flex items-baseline gap-1 mb-2">
+                                            <span className="text-5xl font-serif text-[#1F1F1F] tabular-nums">{heartRate}</span>
+                                            <span className="text-sm text-[#8A817C] uppercase font-bold">BPM</span>
+                                        </div>
+                                        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#E6F6F4] text-[#00A991]">
+                                            <div className="w-2 h-2 rounded-full bg-[#00A991]"></div>
+                                            <span className="text-[10px] font-bold uppercase">Normal</span>
+                                        </div>
+                                    </motion.div>
+                                )}
                             </div>
-                            <div className="flex items-baseline gap-1 mb-2">
-                                <span className="text-5xl font-serif text-[#1F1F1F]">120</span>
-                                <span className="text-xl text-[#8A817C]">/80</span>
-                            </div>
-                            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FFF0F5] text-[#FF4D8C]">
-                                <span className="text-[10px] font-bold uppercase">Optimal</span>
+
+                            {/* BP Card */}
+                            <div className="bg-white p-6 rounded-[2rem] border border-white shadow-sm hover:shadow-md transition-all duration-300 group h-40 relative">
+                                <div className="flex justify-between items-start mb-2 relative z-10">
+                                    <span className="text-xs font-bold tracking-widest text-[#8A817C] uppercase">Blood Pressure</span>
+                                    <Activity className="w-4 h-4 text-[#F59E0B]" />
+                                </div>
+
+                                {showHistory ? (
+                                     <motion.div 
+                                        initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                                        className="absolute inset-0 flex items-center justify-center p-4 pt-8"
+                                    >
+                                        {/* Dynamic Sparkline */}
+                                        <svg viewBox="0 0 100 40" className="w-full h-full overflow-visible">
+                                            {/* Systolic Trend */}
+                                            <path d={generateSparkline(bpHistory, 100, 160)} fill="none" stroke="#F59E0B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                                            {/* Baseline reference line */}
+                                            <line x1="0" y1="20" x2="100" y2="20" stroke="#F59E0B" strokeWidth="1" strokeDasharray="4 4" opacity="0.3" />
+                                        </svg>
+                                    </motion.div>
+                                ) : (
+                                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                                        <div className="flex items-baseline gap-1 mb-2">
+                                            <span className="text-5xl font-serif text-[#1F1F1F] tabular-nums">{bpSystolic}</span>
+                                            <span className="text-xl text-[#8A817C] tabular-nums">/{bpDiastolic}</span>
+                                        </div>
+                                        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FFF0F5] text-[#FF4D8C]">
+                                            <span className="text-[10px] font-bold uppercase">Optimal</span>
+                                        </div>
+                                    </motion.div>
+                                )}
                             </div>
                         </div>
                      </div>
@@ -162,6 +352,7 @@ export default function Home() {
                         <motion.div 
                             className="absolute top-[30%] left-[55%] cursor-pointer"
                             whileHover={{ scale: 1.1 }}
+                            onClick={() => setShowMyocardiumInfo(!showMyocardiumInfo)}
                         >
                             <div className="w-20 h-20 rounded-full border border-[#FF4D8C]/30 flex items-center justify-center animate-pulse">
                                 <div className="w-12 h-12 rounded-full bg-[#FF4D8C]/10 flex items-center justify-center text-[#FF4D8C] backdrop-blur-md shadow-[0_0_20px_rgba(255,77,140,0.4)]">
@@ -170,13 +361,35 @@ export default function Home() {
                             </div>
                         </motion.div>
                         
+                        <AnimatePresence>
+                            {showMyocardiumInfo && (
+                                <motion.div 
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.9 }}
+                                    className="absolute top-[15%] left-[65%] w-48 bg-white/95 backdrop-blur-xl p-4 rounded-2xl shadow-xl border border-white/50 z-20"
+                                >
+                                    <button onClick={() => setShowMyocardiumInfo(false)} className="absolute top-2 right-2 text-slate-400 hover:text-slate-600">
+                                        <X className="w-3 h-3" />
+                                    </button>
+                                    <h4 className="text-sm font-bold text-[#FF4D8C] mb-1">Myocardium</h4>
+                                    <p className="text-[10px] text-slate-600 leading-relaxed">
+                                        The muscular middle layer of the heart wall. It pumps blood through the circulatory system.
+                                    </p>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                        
                         <motion.div 
                             className="absolute top-[25%] left-[30%] lg:left-[40%]"
                             initial={{ x: -20, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
                             transition={{ delay: 0.8 }}
                         >
-                            <div className="bg-white/90 backdrop-blur-md px-4 py-2 rounded-2xl shadow-lg flex items-center gap-3 border border-white/50 hover:scale-105 transition-transform cursor-pointer">
+                            <div 
+                                onClick={() => setShowMyocardiumInfo(true)}
+                                className="bg-white/90 backdrop-blur-md px-4 py-2 rounded-2xl shadow-lg flex items-center gap-3 border border-white/50 hover:scale-105 transition-transform cursor-pointer"
+                            >
                                 <div>
                                     <span className="text-[10px] font-bold text-[#8A817C] uppercase block">Analysis</span>
                                     <span className="text-sm font-bold text-[#1F1F1F]">Myocardium</span>
@@ -197,19 +410,41 @@ export default function Home() {
                                 </div>
                             </div>
                             <div className="h-16 w-full relative overflow-hidden">
-                                <svg viewBox="0 0 300 100" className="w-full h-full overflow-visible preserve-3d">
-                                    <path 
-                                        d="M0,50 L30,50 L40,20 L50,80 L60,50 L90,50 L100,30 L110,70 L120,50 L150,50 L160,10 L170,90 L180,50 L210,50 L220,35 L230,65 L240,50 L270,50 L280,10 L290,90 L300,50" 
-                                        fill="none" 
-                                        stroke="#FF4D8C" 
-                                        strokeWidth="2.5" 
-                                        strokeLinecap="round" 
-                                        strokeLinejoin="round"
-                                        className="drop-shadow-md"
-                                    />
-                                </svg>
+                                {/* Moving ECG Animation */}
+                                <div className="absolute inset-0 flex w-[200%] animate-ecg-scroll">
+                                     {/* First Cycle */}
+                                     <div className="w-1/2 h-full">
+                                         <svg viewBox="0 0 300 100" className="w-full h-full overflow-visible" preserveAspectRatio="none">
+                                            <path 
+                                                d="M0,50 L30,50 L40,20 L50,80 L60,50 L90,50 L100,30 L110,70 L120,50 L150,50 L160,10 L170,90 L180,50 L210,50 L220,35 L230,65 L240,50 L270,50 L280,10 L290,90 L300,50" 
+                                                fill="none" 
+                                                stroke="#FF4D8C" 
+                                                strokeWidth="2.5" 
+                                                strokeLinecap="round" 
+                                                strokeLinejoin="round"
+                                                vectorEffect="non-scaling-stroke"
+                                                className="drop-shadow-md"
+                                            />
+                                        </svg>
+                                     </div>
+                                     {/* Second Cycle (Exact Duplicate) */}
+                                     <div className="w-1/2 h-full">
+                                         <svg viewBox="0 0 300 100" className="w-full h-full overflow-visible" preserveAspectRatio="none">
+                                            <path 
+                                                d="M0,50 L30,50 L40,20 L50,80 L60,50 L90,50 L100,30 L110,70 L120,50 L150,50 L160,10 L170,90 L180,50 L210,50 L220,35 L230,65 L240,50 L270,50 L280,10 L290,90 L300,50" 
+                                                fill="none" 
+                                                stroke="#FF4D8C" 
+                                                strokeWidth="2.5" 
+                                                strokeLinecap="round" 
+                                                strokeLinejoin="round"
+                                                vectorEffect="non-scaling-stroke"
+                                                className="drop-shadow-md"
+                                            />
+                                        </svg>
+                                     </div>
+                                </div>
                                 {/* Gradient Fade for Graph */}
-                                <div className="absolute inset-0 bg-gradient-to-r from-white via-transparent to-white pointer-events-none"></div>
+                                <div className="absolute inset-0 bg-gradient-to-r from-white via-transparent to-white pointer-events-none z-10"></div>
                             </div>
                         </div>
                     </motion.div>
