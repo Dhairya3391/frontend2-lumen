@@ -1,6 +1,6 @@
 import { PatientData, PredictionResponse, ModelInfo } from './types';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_BASE_URL = 'https://cardiovascular-disease-detector-backend.onrender.com';
 
 export async function predictRisk(data: PatientData): Promise<PredictionResponse> {
   const response = await fetch(`${API_BASE_URL}/predict`, {

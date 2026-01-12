@@ -10,7 +10,6 @@ import { RangeSlider } from "@/components/ui/RangeSlider"
 import { SelectionCard } from "@/components/ui/SelectionCard"
 import { motion, AnimatePresence } from "framer-motion"
 import { ArrowLeft, ArrowRight, Activity, Cigarette, Wine, Check, Heart, User, Ruler, Armchair } from "lucide-react"
-import { cn } from "@/lib/utils"
 
 // Schema
 const formSchema = z.object({
@@ -46,7 +45,7 @@ export function AssessmentForm({ onSubmit, isLoading }: AssessmentFormProps) {
   const [currentStep, setCurrentStep] = useState(0)
   const [direction, setDirection] = useState(0)
 
-  const { register, handleSubmit, watch, setValue, formState: { errors } } = useForm<FormValues>({
+  const { handleSubmit, watch, setValue, formState: { } } = useForm<FormValues>({
     resolver: zodResolver(formSchema) as any,
     defaultValues: {
       age: 50,
@@ -108,7 +107,7 @@ export function AssessmentForm({ onSubmit, isLoading }: AssessmentFormProps) {
               <button 
                 onClick={prevStep} 
                 disabled={currentStep === 0}
-                className="w-10 h-10 rounded-full border border-[#EAE0D5] bg-white flex items-center justify-center hover:bg-slate-50 disabled:opacity-0 transition-all"
+                className="w-10 h-10 rounded-full border border-[#EAE0D5] bg-white flex items-center justify-center hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
               >
                 <ArrowLeft className="w-5 h-5 text-[#1F1F1F]" />
               </button>
@@ -128,7 +127,7 @@ export function AssessmentForm({ onSubmit, isLoading }: AssessmentFormProps) {
 
         <div className="relative h-1.5 bg-[#EAE0D5] rounded-full overflow-hidden">
           <motion.div 
-            className="absolute top-0 left-0 h-full bg-gradient-to-r from-[#FF4D8C] to-[#F59E0B]"
+            className="absolute top-0 left-0 h-full bg-linear-to-r from-[#FF4D8C] to-[#F59E0B]"
             initial={{ width: "0%" }}
             animate={{ width: `${((currentStep + 1) / STEPS.length) * 100}%` }}
             transition={{ duration: 0.5, ease: "easeInOut" }}
@@ -137,7 +136,7 @@ export function AssessmentForm({ onSubmit, isLoading }: AssessmentFormProps) {
       </div>
 
       {/* Step Content */}
-      <div className="min-h-[400px] relative">
+      <div className="min-h-100 relative">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={currentStep}
@@ -152,7 +151,7 @@ export function AssessmentForm({ onSubmit, isLoading }: AssessmentFormProps) {
             {/* STEP 1: PERSONAL */}
             {currentStep === 0 && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-white">
+                <div className="bg-white p-8 rounded-4xl shadow-sm border border-white">
                     <div className="flex items-center gap-3 mb-6">
                         <User className="w-6 h-6 text-[#FF4D8C]" />
                         <h3 className="font-bold text-lg text-[#1F1F1F]">Demographics</h3>
@@ -188,10 +187,53 @@ export function AssessmentForm({ onSubmit, isLoading }: AssessmentFormProps) {
                 </div>
                 
                 {/* Visual Context or Helper */}
-                <div className="hidden md:flex items-center justify-center p-8 bg-[#FFF0F5] rounded-[2rem] opacity-50">
-                     <div className="text-center">
-                        <User className="w-24 h-24 text-[#FF4D8C] mx-auto mb-4 opacity-50" />
-                        <p className="text-[#FF4D8C] font-serif italic text-lg">"Accurate demographics are crucial for baselining risk factors."</p>
+                <div className="hidden md:flex items-center justify-center p-8 bg-[#FFF0F5] rounded-4xl opacity-100">
+                     <div className="relative w-80 h-52 backdrop-blur-xl bg-white/80 rounded-[2rem] shadow-xl border border-white flex flex-col justify-between p-6 hover:scale-105 transition-transform duration-500 overflow-hidden">
+                        
+                        {/* Header: Minimal Label & Status Dot */}
+                        <div className="flex justify-between items-start">
+                            <div className="flex flex-col">
+                                <span className="text-[10px] uppercase tracking-[0.2em] text-[#8A817C] font-bold">Medical Profile</span>
+                                <span className="text-[10px] text-slate-400 font-mono mt-1">ID: 8842-XJ9</span>
+                            </div>
+                            <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)] animate-pulse"></div>
+                        </div>
+
+                        {/* Main Content: Typography Focus */}
+                        <div className="flex items-end gap-4">
+                             <div className="flex-1">
+                                <span className="block text-6xl font-serif text-[#1F1F1F] leading-none tracking-tighter">
+                                    {formValues.age}
+                                </span>
+                                <span className="text-sm font-medium text-[#8A817C] uppercase tracking-wider ml-1">Years Old</span>
+                             </div>
+                             
+                             {/* Gender Indicator */}
+                             <div className="mb-2">
+                                <div className={`w-12 h-12 rounded-full flex items-center justify-center text-xl border-2 ${formValues.gender === 1 ? 'border-pink-200 bg-pink-50 text-pink-500' : 'border-blue-200 bg-blue-50 text-blue-500'}`}>
+                                    {formValues.gender === 1 ? '♀' : '♂'}
+                                </div>
+                             </div>
+                        </div>
+
+                        {/* Footer: Subtle details */}
+                        <div className="pt-4 border-t border-slate-100 flex justify-between items-center">
+                             <div className="flex items-center gap-2">
+                                <User className="w-3 h-3 text-[#8A817C]" />
+                                <span className="text-[10px] font-bold text-[#1F1F1F]">
+                                    {formValues.gender === 1 ? 'Female Subject' : 'Male Subject'}
+                                </span>
+                             </div>
+                             {/* Abstract Decorative Element */}
+                             <div className="flex gap-1">
+                                 <div className="w-1 h-3 bg-slate-200 rounded-full"></div>
+                                 <div className="w-1 h-2 bg-slate-200 rounded-full"></div>
+                                 <div className="w-1 h-4 bg-[#FF4D8C] rounded-full"></div>
+                             </div>
+                        </div>
+                        
+                        {/* Background Decoration */}
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-slate-50 to-transparent -z-10 rounded-bl-full opacity-50"></div>
                      </div>
                 </div>
               </div>
@@ -227,7 +269,7 @@ export function AssessmentForm({ onSubmit, isLoading }: AssessmentFormProps) {
             {/* STEP 3: VITALS */}
             {currentStep === 2 && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-white space-y-8">
+                <div className="bg-white p-8 rounded-4xl shadow-sm border border-white space-y-8">
                     <div className="flex items-center gap-3 mb-2">
                         <Ruler className="w-6 h-6 text-[#FF4D8C]" />
                         <h3 className="font-bold text-lg text-[#1F1F1F]">Body Metrics</h3>
@@ -250,7 +292,7 @@ export function AssessmentForm({ onSubmit, isLoading }: AssessmentFormProps) {
                     />
                 </div>
 
-                <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-white space-y-8">
+                <div className="bg-white p-8 rounded-4xl shadow-sm border border-white space-y-8">
                     <div className="flex items-center gap-3 mb-2">
                         <Heart className="w-6 h-6 text-[#FF4D8C]" />
                         <h3 className="font-bold text-lg text-[#1F1F1F]">Blood Pressure</h3>
@@ -335,7 +377,7 @@ export function AssessmentForm({ onSubmit, isLoading }: AssessmentFormProps) {
             {/* STEP 5: HABITS */}
             {currentStep === 4 && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                 <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-white h-full flex flex-col justify-center">
+                 <div className="bg-white p-8 rounded-4xl shadow-sm border border-white h-full flex flex-col justify-center">
                     <div className="text-center mb-6">
                         <div className="w-16 h-16 bg-[#FFF0F5] rounded-full flex items-center justify-center mx-auto mb-4 text-[#FF4D8C]">
                             <Cigarette className="w-8 h-8" />
@@ -360,7 +402,7 @@ export function AssessmentForm({ onSubmit, isLoading }: AssessmentFormProps) {
                     </div>
                  </div>
 
-                 <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-white h-full flex flex-col justify-center">
+                 <div className="bg-white p-8 rounded-4xl shadow-sm border border-white h-full flex flex-col justify-center">
                     <div className="text-center mb-6">
                         <div className="w-16 h-16 bg-[#FFF0F5] rounded-full flex items-center justify-center mx-auto mb-4 text-[#FF4D8C]">
                             <Wine className="w-8 h-8" />
@@ -395,7 +437,7 @@ export function AssessmentForm({ onSubmit, isLoading }: AssessmentFormProps) {
       <div className="mt-12 flex justify-end">
         <Button 
             onClick={nextStep} 
-            className="w-full md:w-auto md:min-w-[200px] shadow-glow h-14 text-lg rounded-full"
+            className="w-full md:w-auto md:min-w-50 shadow-glow h-14 text-lg rounded-full"
             disabled={isLoading}
             size="lg"
         >

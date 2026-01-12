@@ -7,7 +7,7 @@ import { predictRisk } from "@/lib/api"
 import { PatientData, PredictionResponse } from "@/lib/types"
 import { Button } from "@/components/ui/button"
 import { motion, AnimatePresence } from "framer-motion"
-import { Activity, Heart, ArrowRight, RefreshCw, X } from "lucide-react"
+import { Activity, Heart, RefreshCw, X } from "lucide-react"
 
 // Data Source: Hardcoded locally for this prototype. 
 // In a real app, this could come from a CMS or API.
@@ -48,7 +48,7 @@ export default function Home() {
   const [result, setResult] = useState<PredictionResponse | null>(null);
   const [patientData, setPatientData] = useState<PatientData | null>(null);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [setError] = useState<string | null>(null);
   
   // Interactive States
   const [activeQuote, setActiveQuote] = useState<string | null>(null)
@@ -58,17 +58,17 @@ export default function Home() {
   const [showMyocardiumInfo, setShowMyocardiumInfo] = useState(false)
 
   // Live Simulated Data
-  // Initialize with random values within normal ranges
-  const [heartRate, setHeartRate] = useState(() => Math.floor(Math.random() * (100 - 60 + 1)) + 60)
-  const [bpSystolic, setBpSystolic] = useState(() => Math.floor(Math.random() * (130 - 110 + 1)) + 110)
-  const [bpDiastolic, setBpDiastolic] = useState(() => Math.floor(Math.random() * (85 - 70 + 1)) + 70)
+  // Initialize with fixed values to avoid hydration mismatch
+  const [heartRate, setHeartRate] = useState(75)
+  const [bpSystolic, setBpSystolic] = useState(120)
+  const [bpDiastolic, setBpDiastolic] = useState(80)
 
-  // History Data for Graphs (Initialize with some mock past data relative to current)
+  // History Data for Graphs
   const [hrHistory, setHrHistory] = useState<number[]>(() => 
-    Array.from({length: 15}, () => Math.floor(Math.random() * (100 - 60 + 1)) + 60)
+    Array.from({length: 15}, () => 75)
   )
   const [bpHistory, setBpHistory] = useState<number[]>(() => 
-    Array.from({length: 15}, () => Math.floor(Math.random() * (140 - 110 + 1)) + 110)
+    Array.from({length: 15}, () => 120)
   )
 
   // Initialize Random Data on Mount
@@ -79,6 +79,13 @@ export default function Home() {
     
     // Randomize Greeting
     setGreeting(HEALTH_GREETINGS[Math.floor(Math.random() * HEALTH_GREETINGS.length)])
+
+    // Randomize Vitals on client load
+    setHeartRate(Math.floor(Math.random() * (100 - 60 + 1)) + 60)
+    setBpSystolic(Math.floor(Math.random() * (130 - 110 + 1)) + 110)
+    setBpDiastolic(Math.floor(Math.random() * (85 - 70 + 1)) + 70)
+    setHrHistory(Array.from({length: 15}, () => Math.floor(Math.random() * (100 - 60 + 1)) + 60))
+    setBpHistory(Array.from({length: 15}, () => Math.floor(Math.random() * (140 - 110 + 1)) + 110))
   }, [])
 
   // Simulate Live Vitals
@@ -234,7 +241,7 @@ export default function Home() {
                             className="text-5xl lg:text-7xl font-serif font-bold text-[#1F1F1F] leading-[1.1]"
                         >
                             Your Health, <br/>
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF4D8C] to-[#F59E0B]">Demystified.</span>
+                            <span className="text-transparent bg-clip-text bg-linear-to-r from-[#FF4D8C] to-[#F59E0B]">Demystified.</span>
                         </motion.h1>
                         <motion.p 
                             initial={{ y: 20, opacity: 0 }}
@@ -261,7 +268,7 @@ export default function Home() {
                         
                         <div className="grid grid-cols-2 gap-6">
                             {/* Heart Rate Card */}
-                            <div className="bg-white p-6 rounded-[2rem] border border-white shadow-sm hover:shadow-md transition-all duration-300 group relative overflow-hidden h-40">
+                            <div className="bg-white p-6 rounded-4xl border border-white shadow-sm hover:shadow-md transition-all duration-300 group relative overflow-hidden h-40">
                                 <div className="flex justify-between items-start mb-2 relative z-10">
                                     <span className="text-xs font-bold tracking-widest text-[#8A817C] uppercase">Heart Rate</span>
                                     <Heart className="w-4 h-4 text-[#FF4D8C] fill-current animate-pulse" />
@@ -292,7 +299,7 @@ export default function Home() {
                             </div>
 
                             {/* BP Card */}
-                            <div className="bg-white p-6 rounded-[2rem] border border-white shadow-sm hover:shadow-md transition-all duration-300 group h-40 relative">
+                            <div className="bg-white p-6 rounded-4xl border border-white shadow-sm hover:shadow-md transition-all duration-300 group h-40 relative">
                                 <div className="flex justify-between items-start mb-2 relative z-10">
                                     <span className="text-xs font-bold tracking-widest text-[#8A817C] uppercase">Blood Pressure</span>
                                     <Activity className="w-4 h-4 text-[#F59E0B]" />
@@ -343,10 +350,10 @@ export default function Home() {
                         initial={{ scale: 0.95, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ delay: 0.3 }}
-                        className="relative bg-white rounded-[3rem] p-4 shadow-2xl shadow-pink-100 border border-white h-[500px] lg:h-[600px] overflow-hidden group"
+                        className="relative bg-white rounded-[3rem] p-4 shadow-2xl shadow-pink-100 border border-white h-125 lg:h-150 overflow-hidden group"
                     >
                         <div className="absolute inset-0 bg-gray-50 bg-[url('https://img.freepik.com/free-vector/human-body-structure-polygonal-wireframe-composition_1284-18751.jpg')] bg-cover bg-center opacity-90 mix-blend-multiply transition-transform duration-1000 group-hover:scale-105"></div>
-                        <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-transparent to-white/90 pointer-events-none"></div>
+                        <div className="absolute inset-0 bg-linear-to-b from-white/60 via-transparent to-white/90 pointer-events-none"></div>
                         
                         {/* Interactive Markers */}
                         <motion.div 
@@ -401,7 +408,7 @@ export default function Home() {
                         </motion.div>
                         
                         {/* Live ECG Overlay */}
-                        <div className="absolute bottom-8 left-8 right-8 bg-white/80 backdrop-blur-xl p-6 rounded-[2rem] border border-white/50 shadow-lg">
+                        <div className="absolute bottom-8 left-8 right-8 bg-white/80 backdrop-blur-xl p-6 rounded-4xl border border-white/50 shadow-lg">
                             <div className="flex justify-between items-center mb-4">
                                 <span className="text-xs font-bold tracking-widest text-[#8A817C] uppercase">Live Rhythm</span>
                                 <div className="flex items-center gap-2">
@@ -444,7 +451,7 @@ export default function Home() {
                                      </div>
                                 </div>
                                 {/* Gradient Fade for Graph */}
-                                <div className="absolute inset-0 bg-gradient-to-r from-white via-transparent to-white pointer-events-none z-10"></div>
+                                <div className="absolute inset-0 bg-linear-to-r from-white via-transparent to-white pointer-events-none z-10"></div>
                             </div>
                         </div>
                     </motion.div>
@@ -454,10 +461,10 @@ export default function Home() {
 
              {/* Mobile Floating Action Button */}
              <div className="lg:hidden fixed bottom-6 left-4 right-4 z-50">
-                 <div className="absolute inset-0 bg-white/50 backdrop-blur-xl rounded-[2rem] -z-10 shadow-2xl"></div>
+                 <div className="absolute inset-0 bg-white/50 backdrop-blur-xl rounded-4xl -z-10 shadow-2xl"></div>
                  <Button 
                     onClick={startAssessment} 
-                    className="w-full h-16 text-lg rounded-[1.5rem] shadow-glow"
+                    className="w-full h-16 text-lg rounded-3xl shadow-glow"
                  >
                     <Activity className="mr-2 w-5 h-5" /> Analyze Symptoms
                  </Button>

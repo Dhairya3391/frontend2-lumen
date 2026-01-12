@@ -1,11 +1,11 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect } from "react"
 import { PatientData, PredictionResponse } from "@/lib/types"
 import { predictRisk } from "@/lib/api"
 import { Button } from "@/components/ui/button"
-import { motion, AnimatePresence } from "framer-motion"
-import { MoreHorizontal, ArrowLeft, RefreshCw, Activity, TrendingDown, TrendingUp, Zap } from "lucide-react"
+import { motion } from "framer-motion"
+import { ArrowLeft, RefreshCw, Activity, TrendingDown, TrendingUp, Zap } from "lucide-react"
 import { RangeSlider } from "@/components/ui/RangeSlider"
 import { cn } from "@/lib/utils"
 
@@ -145,8 +145,8 @@ export function Dashboard({ originalData, result: initialResult, onReset }: Dash
 
                     <div className="relative">
                          {/* Circular Gauge */}
-                         <div className="w-64 h-64 lg:w-80 lg:h-80 rounded-full border-[20px] border-[#F5F5F5] flex items-center justify-center relative bg-white shadow-inner">
-                            <svg className="absolute inset-0 w-full h-full rotate-[-90deg]">
+                         <div className="w-64 h-64 lg:w-80 lg:h-80 rounded-full border-20 border-[#F5F5F5] flex items-center justify-center relative bg-white shadow-inner">
+                            <svg className="absolute inset-0 w-full h-full -rotate-90">
                                 <motion.circle
                                     cx="50%"
                                     cy="50%"
@@ -192,7 +192,7 @@ export function Dashboard({ originalData, result: initialResult, onReset }: Dash
             <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="bg-[#1F1F1F] text-white rounded-[2.5rem] p-8 shadow-xl relative overflow-hidden group">
                      {/* Gradient BG */}
-                     <div className="absolute inset-0 bg-gradient-to-br from-[#2a2a2a] to-[#1a1a1a]"></div>
+                     <div className="absolute inset-0 bg-linear-to-br from-[#2a2a2a] to-[#1a1a1a]"></div>
                      
                      <div className="relative z-10">
                         <h3 className="text-lg font-bold opacity-80 mb-1">10-Year Risk</h3>
