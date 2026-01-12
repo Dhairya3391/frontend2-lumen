@@ -222,7 +222,7 @@ export default function Home() {
               >
                 <div className="w-12 h-12 rounded-full bg-[#A2D2C9] relative overflow-hidden flex items-center justify-center shrink-0 border-2 border-white shadow-sm group-hover:scale-105 transition-transform">
                   <Image
-                    src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${avatarSeed}`}
+                    src={`https://api.dicebear.com/7.x/avataaars/png?seed=${avatarSeed}&size=96`}
                     alt="User"
                     width={40}
                     height={40}
