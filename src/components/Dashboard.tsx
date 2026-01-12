@@ -90,6 +90,12 @@ export function Dashboard({ originalData, result: initialResult, onReset }: Dash
   // Calculate difference from original
   const riskDiff = Math.round((currentResult.probability - initialResult.probability) * 100)
 
+  const handleResetSimulation = () => {
+    setSimulatedData(originalData);
+    // Optionally reset result to initial immediately or let effect handle it
+    setCurrentResult(initialResult); 
+  };
+
   return (
     <motion.div 
       variants={containerVariants}
@@ -105,7 +111,7 @@ export function Dashboard({ originalData, result: initialResult, onReset }: Dash
                 <ArrowLeft className="mr-2 w-5 h-5" /> Back to Assessment
             </Button>
             <div className="flex gap-2">
-                <Button variant="outline" className="hidden sm:flex bg-white/50">
+                <Button variant="outline" onClick={handleResetSimulation} className="hidden sm:flex bg-white/50 hover:bg-white">
                    <RefreshCw className="mr-2 w-4 h-4" /> Reset Simulation
                 </Button>
             </div>

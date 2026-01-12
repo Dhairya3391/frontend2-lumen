@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 import { RangeSlider } from "@/components/ui/RangeSlider"
 import { SelectionCard } from "@/components/ui/SelectionCard"
 import { motion, AnimatePresence } from "framer-motion"
-import { ArrowLeft, ArrowRight, Activity, Cigarette, Wine, Check, Heart, User, Ruler } from "lucide-react"
+import { ArrowLeft, ArrowRight, Activity, Cigarette, Wine, Check, Heart, User, Ruler, Armchair } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 // Schema
@@ -207,15 +207,15 @@ export function AssessmentForm({ onSubmit, isLoading }: AssessmentFormProps) {
                  
                 <SelectionCard
                   title="Sedentary Lifestyle"
-                  description="Mostly sitting at a desk, driving, or minimal physical activity (< 30 mins/week)."
-                  icon={<div className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-400 font-bold">1</div>}
+                  description="Mostly sitting (desk job, driving). Less than 30 mins of moderate activity per week."
+                  icon={<div className="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-500"><Armchair className="w-5 h-5"/></div>}
                   selected={formValues.active === 0}
                   onClick={() => { setValue('active', 0); setTimeout(nextStep, 400); }}
                   className="w-full"
                 />
                 <SelectionCard
                   title="Active Lifestyle"
-                  description="Regular exercise, walking, sports, or a physically demanding job."
+                  description="Regular exercise (3+ times/week), walking daily, or a physically demanding job."
                   icon={<div className="w-10 h-10 bg-[#E6F6F4] rounded-full flex items-center justify-center text-[#00A991]"><Activity className="w-5 h-5"/></div>}
                   selected={formValues.active === 1}
                   onClick={() => { setValue('active', 1); setTimeout(nextStep, 400); }}
@@ -255,13 +255,10 @@ export function AssessmentForm({ onSubmit, isLoading }: AssessmentFormProps) {
                         <Heart className="w-6 h-6 text-[#FF4D8C]" />
                         <h3 className="font-bold text-lg text-[#1F1F1F]">Blood Pressure</h3>
                     </div>
-                    <div className="p-4 bg-orange-50 rounded-xl mb-4 border border-orange-100">
-                        <p className="text-xs text-orange-800 leading-relaxed">
-                            <strong>Note:</strong> Systolic is the top number, Diastolic is the bottom number.
-                        </p>
-                    </div>
+                    
                     <RangeSlider
-                        label="Systolic (Top)"
+                        label="Systolic Pressure"
+                        description="Pressure when your heart beats (squeezes)."
                         min={80}
                         max={200}
                         value={formValues.ap_hi}
@@ -269,7 +266,8 @@ export function AssessmentForm({ onSubmit, isLoading }: AssessmentFormProps) {
                         unit="mmHg"
                     />
                     <RangeSlider
-                        label="Diastolic (Bottom)"
+                        label="Diastolic Pressure"
+                        description="Pressure between beats (when heart rests)."
                         min={50}
                         max={150}
                         value={formValues.ap_lo}
@@ -284,29 +282,51 @@ export function AssessmentForm({ onSubmit, isLoading }: AssessmentFormProps) {
             {currentStep === 3 && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-4">
-                    <label className="text-sm font-bold uppercase tracking-widest text-[#1F1F1F] mb-4 block">Cholesterol Level</label>
+                    <label className="text-sm font-bold uppercase tracking-widest text-[#1F1F1F] mb-2 block">Cholesterol Level</label>
+                    <p className="text-xs text-[#8A817C] mb-4">Total cholesterol levels indicating fat in your blood.</p>
                     <div className="grid gap-3">
-                        {[1, 2, 3].map((level) => (
-                            <SelectionCard
-                                key={level}
-                                title={level === 1 ? "Normal" : level === 2 ? "Above Normal" : "Well Above Normal"}
-                                selected={formValues.cholesterol === level}
-                                onClick={() => setValue('cholesterol', level)}
-                            />
-                        ))}
+                        <SelectionCard
+                            title="Normal"
+                            description="< 200 mg/dL. Healthy level."
+                            selected={formValues.cholesterol === 1}
+                            onClick={() => setValue('cholesterol', 1)}
+                        />
+                        <SelectionCard
+                            title="Above Normal"
+                            description="200-239 mg/dL. Borderline high."
+                            selected={formValues.cholesterol === 2}
+                            onClick={() => setValue('cholesterol', 2)}
+                        />
+                         <SelectionCard
+                            title="Well Above Normal"
+                            description="≥ 240 mg/dL. High risk."
+                            selected={formValues.cholesterol === 3}
+                            onClick={() => setValue('cholesterol', 3)}
+                        />
                     </div>
                 </div>
                 <div className="space-y-4">
-                    <label className="text-sm font-bold uppercase tracking-widest text-[#1F1F1F] mb-4 block">Glucose Level</label>
+                    <label className="text-sm font-bold uppercase tracking-widest text-[#1F1F1F] mb-2 block">Glucose Level</label>
+                    <p className="text-xs text-[#8A817C] mb-4">Fasting blood sugar levels indicating diabetes risk.</p>
                     <div className="grid gap-3">
-                        {[1, 2, 3].map((level) => (
-                            <SelectionCard
-                                key={level}
-                                title={level === 1 ? "Normal" : level === 2 ? "Above Normal" : "Well Above Normal"}
-                                selected={formValues.gluc === level}
-                                onClick={() => setValue('gluc', level)}
-                            />
-                        ))}
+                        <SelectionCard
+                            title="Normal"
+                            description="< 100 mg/dL. Healthy range."
+                            selected={formValues.gluc === 1}
+                            onClick={() => setValue('gluc', 1)}
+                        />
+                        <SelectionCard
+                            title="Above Normal"
+                            description="100-125 mg/dL. Pre-diabetes range."
+                            selected={formValues.gluc === 2}
+                            onClick={() => setValue('gluc', 2)}
+                        />
+                         <SelectionCard
+                            title="Well Above Normal"
+                            description="≥ 126 mg/dL. Diabetes range."
+                            selected={formValues.gluc === 3}
+                            onClick={() => setValue('gluc', 3)}
+                        />
                     </div>
                 </div>
               </div>
