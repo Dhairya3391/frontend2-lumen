@@ -75,7 +75,7 @@ export function AssessmentForm({ onSubmit, isLoading }: AssessmentFormProps) {
   };
 
   const { handleSubmit, control, setValue } = useForm<FormValues>({
-    resolver: zodResolver(formSchema) as Resolver<FormValues, any, FormValues>,
+    resolver: zodResolver(formSchema) as Resolver<FormValues, unknown>,
     defaultValues,
   });
 
@@ -211,7 +211,7 @@ export function AssessmentForm({ onSubmit, isLoading }: AssessmentFormProps) {
 
                 {/* Visual Context or Helper */}
                 <div className="hidden md:flex items-center justify-center p-8 bg-[#FFF0F5] rounded-4xl opacity-100">
-                  <div className="relative w-80 h-52 backdrop-blur-xl bg-white/80 rounded-[2rem] shadow-xl border border-white flex flex-col justify-between p-6 hover:scale-105 transition-transform duration-500 overflow-hidden">
+                  <div className="relative w-80 h-52 backdrop-blur-xl bg-white/80 rounded-4xl shadow-xl border border-white flex flex-col justify-between p-6 hover:scale-105 transition-transform duration-500 overflow-hidden">
                     {/* Header: Minimal Label & Status Dot */}
                     <div className="flex justify-between items-start">
                       <div className="flex flex-col">
@@ -265,7 +265,7 @@ export function AssessmentForm({ onSubmit, isLoading }: AssessmentFormProps) {
                     </div>
 
                     {/* Background Decoration */}
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-slate-50 to-transparent -z-10 rounded-bl-full opacity-50"></div>
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-linear-to-bl from-slate-50 to-transparent -z-10 rounded-bl-full opacity-50"></div>
                   </div>
                 </div>
               </div>
