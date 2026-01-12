@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Minimalist Health Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "champagne": "#F9F7F2","mauve": "#483C46","mauve-light": "#8A7E88","mauve-pale": "#E6E1E5","hot-pink": "#FF5C8D","almond": "#E3DAC9","surface": "#FFFFFF",},
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    boxShadow: {
+                        'neon': '0 0 15px rgba(255, 92, 141, 0.4), 0 0 30px rgba(255, 92, 141, 0.2)',
+                        'soft': '0 10px 40px -10px rgba(72, 60, 70, 0.08)',
+                        'glow-sm': '0 0 10px rgba(255, 92, 141, 0.3)',
+                    }
+                },
+            },
+        }
+    </script>
+<style>@keyframes subtle-pulse {
+            0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 92, 141, 0.6); }
+            50% { opacity: 0.8; transform: scale(1.05); box-shadow: 0 0 0 8px rgba(255, 92, 141, 0); }
+        }
+        .hotspot-pulse {
+            animation: subtle-pulse 2.5s infinite;
+        }.mauve-filter {
+            filter: invert(1) hue-rotate(220deg) brightness(0.7) contrast(1.2) sepia(0.3);
+            mix-blend-mode: multiply;
+        }
+    </style>
+<style>
+        body {
+            mi:container-queries:n-height: max(884px, 100dvh);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-champagne font-display text-mauve antialiased overflow-x-hidden selection:bg-hot-pink selection:text-white">
+<div class="relative flex min-h-screen flex-col">
+<header class="sticky top-0 z-50 bg-champagne/90 backdrop-blur-md border-b border-almond px-6 py-4 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<div class="relative">
+<div class="bg-center bg-no-repeat bg-cover rounded-full size-10 border border-almond shadow-sm" data-alt="User profile avatar showing a smiling person" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuByzQwG-v5_aoyE91B1ZG56b2KZaBsgemOCX18cOR0hjhjsvJIA5_kvbLC_g8Rz4bwd17E_uvaOQ7dRKewgzuUWTQpxeqE1wkspBOu2RBhvNnyGJEyHcL_VYbcJYmgDm4LKTA1dfy0nUP761jLjG1ZfYlfTZUVRqQgO45XzGL2clVIH-4WBxA2CWjns0EeKtsoCQxB4U6rQDTVaiHhlgXMnZnxnXkn0uE7I14cPYg-tP8SDU5sUJf6-OO_0qACSXmzvdhtmovwWOLA");'>
+</div>
+<div class="absolute bottom-0 right-0 size-2.5 bg-emerald-400 rounded-full border-2 border-champagne"></div>
+</div>
+<div>
+<h1 class="text-xl font-bold leading-tight tracking-tight text-mauve">Health Hub</h1>
+<p class="text-[10px] text-hot-pink font-bold tracking-widest uppercase">Connected</p>
+</div>
+</div>
+<button class="flex items-center justify-center size-10 rounded-full bg-surface border border-almond hover:bg-mauve-pale transition-colors text-mauve">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</button>
+</header>
+<main class="flex-1 flex flex-col gap-8 p-6 pb-28">
+<div class="text-center space-y-2 pt-2">
+<h2 class="text-3xl font-bold tracking-tight text-mauve">Diagnostic Scan</h2>
+<p class="text-sm text-mauve-light font-medium">Tap highlighted zones to log symptoms</p>
+</div>
+<div class="relative w-full aspect-[3/4] max-w-sm mx-auto rounded-3xl overflow-hidden border border-almond bg-surface shadow-soft">
+<div class="absolute inset-0 opacity-40" style="background-image: radial-gradient(#E3DAC9 1px, transparent 1px); background-size: 24px 24px;"></div>
+<div class="absolute inset-0 bg-center bg-contain bg-no-repeat z-10 opacity-90 mauve-filter" data-alt="Futuristic 3D wireframe illustration of a human upper body torso styled as minimalist line art" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBZNf_SR_A7JRzxjINCRfMxkehrr22Wh_bmNe7Xhr43bRqXDZwNrKRLISi5mslf3p_7iwhh80NhZZrIiBIWxyw0LQZTPB0wGtUxaWtsrSDc3_sblUO6c6HntHmJMYGSv1PBIMB2PJWgYz6WJQ-Wk614WTeH3zbzOc_DCiqng0JmHEbIn0DuGNyplxyXenaLWFqdb3424hEOrV8cOy1sET-MyQSBWUwDJVEKsHoR0y3FB0Iji3pY2Pu7N4NQNlG7122QozuMnUGpaio");'>
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent opacity-80 z-10"></div>
+<button class="absolute top-[20%] left-[50%] -translate-x-1/2 z-20 group">
+<div class="relative flex items-center justify-center">
+<div class="size-8 rounded-full bg-hot-pink/10 border border-hot-pink hotspot-pulse flex items-center justify-center backdrop-blur-sm shadow-glow-sm">
+<span class="material-symbols-outlined text-hot-pink text-[18px]">add</span>
+</div>
+<div class="absolute left-full ml-3 px-3 py-1.5 rounded-lg bg-surface border border-almond shadow-lg text-xs font-bold text-mauve opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-30">
+                        Neck / Throat
+                    </div>
+</div>
+</button>
+<button class="absolute top-[35%] left-[55%] z-20 group">
+<div class="relative flex items-center justify-center">
+<div class="size-14 rounded-full bg-hot-pink/5 border border-hot-pink hotspot-pulse flex items-center justify-center backdrop-blur-sm shadow-glow-sm">
+<span class="material-symbols-outlined text-hot-pink text-[26px]">ecg_heart</span>
+</div>
+<div class="absolute right-full mr-3 px-3 py-1.5 rounded-lg bg-surface border border-almond shadow-lg text-xs font-bold text-hot-pink opacity-100 transition-opacity whitespace-nowrap z-30">
+                        Myocardium
+                    </div>
+</div>
+</button>
+<button class="absolute top-[40%] left-[30%] z-20 group">
+<div class="relative flex items-center justify-center">
+<div class="size-8 rounded-full bg-hot-pink/10 border border-hot-pink hotspot-pulse flex items-center justify-center backdrop-blur-sm shadow-glow-sm">
+<span class="material-symbols-outlined text-hot-pink text-[18px]">add</span>
+</div>
+</div>
+</button>
+</div>
+<div class="flex flex-col gap-5">
+<div class="flex items-center justify-between px-1">
+<h3 class="text-mauve text-sm font-bold uppercase tracking-wider flex items-center gap-2">
+<span class="size-2 rounded-full bg-hot-pink animate-pulse"></span>
+                    Active Sensors
+                </h3>
+<button class="text-xs text-hot-pink font-bold hover:text-hot-pink/80 uppercase tracking-wide">View History</button>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col gap-3 rounded-2xl p-5 bg-surface border border-almond shadow-sm hover:shadow-soft transition-shadow relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-[0.05] group-hover:opacity-10 transition-opacity">
+<span class="material-symbols-outlined text-5xl text-mauve">favorite</span>
+</div>
+<p class="text-mauve-light text-[10px] font-bold uppercase tracking-wider">Heart Rate</p>
+<div class="flex items-baseline gap-1.5">
+<p class="text-mauve text-4xl font-bold tracking-tight">72</p>
+<p class="text-mauve-light text-xs font-medium">BPM</p>
+</div>
+<div class="flex items-center gap-1.5 text-emerald-600 text-[10px] font-bold bg-emerald-50 border border-emerald-100 w-fit px-2 py-1 rounded-md">
+<span class="material-symbols-outlined text-[12px]">check_circle</span>
+                        Normal
+                    </div>
+</div>
+<div class="flex flex-col gap-3 rounded-2xl p-5 bg-surface border border-almond shadow-sm hover:shadow-soft transition-shadow relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-[0.05] group-hover:opacity-10 transition-opacity">
+<span class="material-symbols-outlined text-5xl text-mauve">compress</span>
+</div>
+<p class="text-mauve-light text-[10px] font-bold uppercase tracking-wider">Blood Pressure</p>
+<div class="flex items-baseline gap-1.5">
+<p class="text-mauve text-4xl font-bold tracking-tight">120<span class="text-xl text-mauve-light">/80</span></p>
+<p class="text-mauve-light text-xs font-medium">mmHg</p>
+</div>
+<div class="flex items-center gap-1.5 text-hot-pink text-[10px] font-bold bg-hot-pink/5 border border-hot-pink/20 w-fit px-2 py-1 rounded-md">
+<span class="material-symbols-outlined text-[12px]">trending_flat</span>
+                        Optimal
+                    </div>
+</div>
+</div>
+<div class="rounded-2xl bg-surface border border-almond shadow-sm p-6">
+<div class="flex justify-between items-start mb-6">
+<div>
+<p class="text-mauve-light text-[10px] font-bold uppercase tracking-wider mb-1">Live Pulse Rhythm</p>
+<p class="text-mauve text-lg font-bold">Normal Sinus Rhythm</p>
+</div>
+<div class="bg-hot-pink/10 border border-hot-pink/20 p-2 rounded-xl">
+<span class="material-symbols-outlined text-hot-pink">monitor_heart</span>
+</div>
+</div>
+<div class="relative w-full h-24 overflow-hidden">
+<svg class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 400 100">
+<defs>
+<linearGradient id="lineGradient" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" style="stop-color:#FF5C8D;stop-opacity:0"></stop>
+<stop offset="10%" style="stop-color:#FF5C8D;stop-opacity:1"></stop>
+<stop offset="90%" style="stop-color:#FF5C8D;stop-opacity:1"></stop>
+<stop offset="100%" style="stop-color:#FF5C8D;stop-opacity:0"></stop>
+</linearGradient>
+</defs>
+<path class="drop-shadow-[0_4px_6px_rgba(255,92,141,0.2)]" d="M0,50 L30,50 L40,20 L50,80 L60,50 L80,50 L90,40 L100,60 L110,50 L140,50 L150,20 L160,80 L170,50 L190,50 L200,40 L210,60 L220,50 L250,50 L260,20 L270,80 L280,50 L300,50 L310,40 L320,60 L330,50 L360,50 L370,20 L380,80 L390,50 L400,50" fill="none" stroke="url(#lineGradient)" stroke-width="2.5" vector-effect="non-scaling-stroke"></path>
+</svg>
+</div>
+<div class="flex justify-between mt-3 border-t border-dashed border-almond pt-2">
+<span class="text-[10px] text-mauve-light font-mono">0s</span>
+<span class="text-[10px] text-mauve-light font-mono">2s</span>
+<span class="text-[10px] text-mauve-light font-mono">4s</span>
+<span class="text-[10px] text-mauve-light font-mono">6s</span>
+</div>
+</div>
+</div>
+</main>
+<div class="fixed bottom-0 left-0 right-0 p-4 bg-champagne/80 backdrop-blur-xl border-t border-almond z-50">
+<button class="w-full h-14 bg-hot-pink hover:bg-pink-500 active:bg-pink-600 text-white font-bold text-lg rounded-xl shadow-neon flex items-center justify-center gap-3 transition-all transform active:scale-[0.98]">
+<span class="material-symbols-outlined">analytics</span>
+            Analyze Symptoms
+        </button>
+</div>
+</div>
+
+</body></html>
