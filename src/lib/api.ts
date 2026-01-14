@@ -29,3 +29,17 @@ export async function getModelInfo(): Promise<ModelInfo> {
   }
   return response.json();
 }
+
+export async function checkHealth(): Promise<boolean> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/health`, {
+      method: "GET",
+      // Add timeout to avoid hanging
+      signal: AbortSignal.timeout(5000),
+    });
+    return response.ok;
+  } catch (error) {
+    console.error("Health check failed:", error);
+    return false;
+  }
+}

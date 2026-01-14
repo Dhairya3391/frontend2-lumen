@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { AssessmentForm } from "@/components/AssessmentForm";
 import { Dashboard } from "@/components/Dashboard";
-import { predictRisk } from "@/lib/api";
+import { predictRisk, checkHealth } from "@/lib/api";
 import { PatientData, PredictionResponse } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
@@ -65,6 +65,7 @@ export default function Home() {
   const [greeting, setGreeting] = useState("User");
   const [showHistory, setShowHistory] = useState(false);
   const [showMyocardiumInfo, setShowMyocardiumInfo] = useState(false);
+  const [isBackendConnected, setIsBackendConnected] = useState(false);
 
   // Live Simulated Data
   // Initialize with fixed values to avoid hydration mismatch
@@ -107,6 +108,13 @@ export default function Home() {
         () => Math.floor(Math.random() * (140 - 110 + 1)) + 110,
       ),
     );
+
+    // Check backend health
+    const checkBackendHealth = async () => {
+      const isHealthy = await checkHealth();
+      setIsBackendConnected(isHealthy);
+    };
+    checkBackendHealth();
   }, []);
 
   // Simulate Live Vitals
@@ -228,14 +236,26 @@ export default function Home() {
                     height={40}
                     className="w-10 h-10"
                   />
-                  <div className="absolute bottom-1 right-1 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+                  <div
+                    className={`absolute bottom-1 right-1 w-3 h-3 border-2 border-white rounded-full ${
+                      isBackendConnected
+                        ? "bg-green-500"
+                        : "bg-gray-400 animate-pulse"
+                    }`}
+                  ></div>
                 </div>
                 <div>
                   <h3 className="font-serif font-bold text-xl text-[#1F1F1F] group-hover:text-[#FF4D8C] transition-colors">
                     Hello, {greeting}
                   </h3>
-                  <p className="text-[10px] font-bold tracking-widest text-[#FF4D8C] uppercase">
-                    Connected
+                  <p
+                    className={`text-[10px] font-bold tracking-widest uppercase ${
+                      isBackendConnected
+                        ? "text-[#00A991]"
+                        : "text-[#8A817C]"
+                    }`}
+                  >
+                    {isBackendConnected ? "Connected" : "Connecting..."}
                   </p>
                 </div>
               </div>
